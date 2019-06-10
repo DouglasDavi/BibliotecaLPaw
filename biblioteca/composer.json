@@ -1,0 +1,16 @@
+{
+    "name": "douglas/biblioteca",
+    "description": "Breve descrição do que a aplicação se propoe a fazer",
+    "authors": [
+        {
+            "name": "Douglas",
+            "email": "douglassromano@gmail.com"
+        }
+    ],
+    "require": {
+       
+        "kevinlebrun/slug.php": "1.*", 
+        "laravel/framework": "php: ^7.1.3",
+       
+    }
+}
