@@ -12,19 +12,23 @@ class exemplar
     private $livro;
     private $tipoLivro;
 
-    public function __construct($idExemplar, $livro, $tipoLivro)
-    {
-        $this->idExemplar = $idExemplar;
-        $this->livro = $livro;
-        $this->tipoLivro = $tipoLivro;
-    }
+
+   public function __construct(){
+
+    }  
+    // public function __construct($idExemplar, $livro, $tipoLivro)
+    // {
+    //     $this->idExemplar = $idExemplar;
+    //     $this->livro = $livro;
+    //     $this->tipoLivro = $tipoLivro;
+    // }
 
     public function getIdExemplar()
     {
         return $this->idExemplar;
     }
 
-    public function setIdExemplar($idExemplar): void
+    public function setIdExemplar($idExemplar)
     {
         $this->idExemplar = $idExemplar;
     }
@@ -34,7 +38,7 @@ class exemplar
         return $this->livro;
     }
 
-    public function setLivro($livro): void
+    public function setLivro($livro)
     {
         $this->livro = $livro;
     }
@@ -44,7 +48,7 @@ class exemplar
         return $this->tipoLivro;
     }
 
-    public function setTipoLivro($tipoLivro): void
+    public function setTipoLivro($tipoLivro)
     {
         $this->tipoLivro = $tipoLivro;
     }
