@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
--- http://www.phpmyadmin.net
+-- version 4.8.5
+-- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: 03-Abr-2019 às 03:09
--- Versão do servidor: 10.1.13-MariaDB
--- PHP Version: 5.6.21
+-- Generation Time: 24-Jun-2019 às 00:37
+-- Versão do servidor: 10.1.38-MariaDB
+-- versão do PHP: 7.3.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -37,7 +39,9 @@ CREATE TABLE `tb_autores` (
 
 INSERT INTO `tb_autores` (`idtb_autores`, `nomeAutor`) VALUES
 (1, 'Douglas Davi'),
-(2, 'juan');
+(2, 'juan'),
+(3, 'Nelson da captinga'),
+(4, 'Keanu Reeves');
 
 -- --------------------------------------------------------
 
@@ -55,7 +59,12 @@ CREATE TABLE `tb_categoria` (
 --
 
 INSERT INTO `tb_categoria` (`idtb_categoria`, `nomeCategoria`) VALUES
-(1, 'n1');
+(2, 'Romance'),
+(3, 'Religião'),
+(4, 'jogos'),
+(5, 'Terror'),
+(6, 'Ação, tiro e sangue'),
+(7, 'Ação');
 
 -- --------------------------------------------------------
 
@@ -73,7 +82,10 @@ CREATE TABLE `tb_editora` (
 --
 
 INSERT INTO `tb_editora` (`idtb_editora`, `nomeEditora`) VALUES
-(1, 'n1');
+(2, 'editora teste'),
+(3, 'Cesjf'),
+(4, 'Programadores'),
+(5, 'Hollywood');
 
 -- --------------------------------------------------------
 
@@ -85,8 +97,25 @@ CREATE TABLE `tb_emprestimo` (
   `tb_usuaio_idtb_usuaio` int(11) NOT NULL,
   `tb_exemplar_idtb_exemplar` int(11) NOT NULL,
   `dataEmprestimo` date NOT NULL,
-  `observacao` tinytext
+  `observacao` tinytext,
+  `vencimento` date NOT NULL,
+  `tipo` int(11) NOT NULL,
+  `dt_entrega` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `tb_emprestimo`
+--
+
+INSERT INTO `tb_emprestimo` (`tb_usuaio_idtb_usuaio`, `tb_exemplar_idtb_exemplar`, `dataEmprestimo`, `observacao`, `vencimento`, `tipo`, `dt_entrega`) VALUES
+(1, 2, '2019-06-22', 'alguma coisa', '2019-07-08', 1, '2019-06-22'),
+(1, 3, '2019-05-28', 'sadasdsadsa', '2019-07-08', 1, '2019-06-22'),
+(1, 4, '2019-06-10', 'observações', '2019-06-20', 1, '2019-06-22'),
+(2, 5, '2019-06-24', 'teste bibliotecario', '2019-07-04', 1, '0000-00-00'),
+(2, 6, '2019-06-22', 'qwertyu', '2019-07-02', 1, '0000-00-00'),
+(2, 7, '2019-06-22', 'tiro porrada e bomba', '2019-07-02', 0, '0000-00-00'),
+(3, 2, '2019-05-14', 'ioHOISHsddsgjksda', '2019-05-29', 0, '0000-00-00'),
+(4, 4, '2019-06-23', 'plakasjkasdhasd', '2019-07-03', 0, '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -100,6 +129,18 @@ CREATE TABLE `tb_exemplar` (
   `tipoExemplar` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Extraindo dados da tabela `tb_exemplar`
+--
+
+INSERT INTO `tb_exemplar` (`idtb_exemplar`, `tb_livro_idtb_livro`, `tipoExemplar`) VALUES
+(2, 18, 1),
+(3, 20, 0),
+(4, 32, 0),
+(5, 19, 1),
+(6, 33, 1),
+(7, 35, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -109,8 +150,8 @@ CREATE TABLE `tb_exemplar` (
 CREATE TABLE `tb_livro` (
   `idtb_livro` int(11) NOT NULL,
   `titulo` varchar(255) NOT NULL,
-  `isbn` varchar(255) NOT NULL,
-  `edicao` varchar(4) DEFAULT NULL,
+  `isbn` varchar(10) NOT NULL,
+  `edicao` varchar(255) DEFAULT NULL,
   `ano` varchar(4) NOT NULL,
   `upload` varchar(255) DEFAULT NULL,
   `tb_editora_idtb_editora` int(11) NOT NULL,
@@ -122,7 +163,12 @@ CREATE TABLE `tb_livro` (
 --
 
 INSERT INTO `tb_livro` (`idtb_livro`, `titulo`, `isbn`, `edicao`, `ano`, `upload`, `tb_editora_idtb_editora`, `tb_categoria_idtb_categoria`) VALUES
-(5, 'teste', '', 'um', '2004', 'ttt', 1, 1);
+(18, 'hoje', 'isbbb', 'edit', '2028', 'upup', 2, 3),
+(19, 'Anjos da Noite', 'is', 'edit', '2018', 'upup', 3, 3),
+(20, 'Livro dois', 'ised', 'edit', '2019', 'upup', 2, 4),
+(32, 'meu livro', 'ijhj', 'E4', '2014', 'teste', 3, 5),
+(33, 'TI em um dia', 'bn', '4edi', '2016', 'upload', 3, 4),
+(35, 'john wick 3', 'BLAU', '3 edição', '2019', 'tiro tiro', 5, 6);
 
 -- --------------------------------------------------------
 
@@ -134,6 +180,20 @@ CREATE TABLE `tb_livro_autor` (
   `tb_livro_idtb_livro` int(11) NOT NULL,
   `tb_autores_idtb_autores` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Extraindo dados da tabela `tb_livro_autor`
+--
+
+INSERT INTO `tb_livro_autor` (`tb_livro_idtb_livro`, `tb_autores_idtb_autores`) VALUES
+(18, 1),
+(18, 2),
+(19, 1),
+(19, 2),
+(20, 1),
+(32, 1),
+(33, 2),
+(35, 4);
 
 -- --------------------------------------------------------
 
@@ -154,7 +214,31 @@ CREATE TABLE `tb_usuaio` (
 --
 
 INSERT INTO `tb_usuaio` (`idtb_usuaio`, `nomeUsuario`, `tipo`, `email`, `senha`) VALUES
-(1, 'douglas', 1, 'douglassromano@gmail.com', '1234');
+(1, 'douglas', 4, 'douglassromano@gmail.com', '1234'),
+(2, 'admin', 1, 'bibliotecario@gmail.com', '4321'),
+(3, 'professor', 3, 'professor@gmail.com', '8d5e957f297893487bd98fa830fa6413'),
+(4, 'Funcinário', 2, 'funcionario@gmail.com', '1234');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `tp_usuario_tb`
+--
+
+CREATE TABLE `tp_usuario_tb` (
+  `id` int(11) NOT NULL,
+  `nome` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Extraindo dados da tabela `tp_usuario_tb`
+--
+
+INSERT INTO `tp_usuario_tb` (`id`, `nome`) VALUES
+(1, 'Administrativo'),
+(2, 'Funcionário'),
+(3, 'Professor'),
+(4, 'Aluno');
 
 --
 -- Indexes for dumped tables
@@ -218,6 +302,12 @@ ALTER TABLE `tb_usuaio`
   ADD UNIQUE KEY `email_UNIQUE` (`email`);
 
 --
+-- Indexes for table `tp_usuario_tb`
+--
+ALTER TABLE `tp_usuario_tb`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -225,32 +315,44 @@ ALTER TABLE `tb_usuaio`
 -- AUTO_INCREMENT for table `tb_autores`
 --
 ALTER TABLE `tb_autores`
-  MODIFY `idtb_autores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idtb_autores` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT for table `tb_categoria`
 --
 ALTER TABLE `tb_categoria`
-  MODIFY `idtb_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idtb_categoria` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- AUTO_INCREMENT for table `tb_editora`
 --
 ALTER TABLE `tb_editora`
-  MODIFY `idtb_editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idtb_editora` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT for table `tb_exemplar`
 --
 ALTER TABLE `tb_exemplar`
-  MODIFY `idtb_exemplar` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idtb_exemplar` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- AUTO_INCREMENT for table `tb_livro`
 --
 ALTER TABLE `tb_livro`
-  MODIFY `idtb_livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `idtb_livro` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
 --
 -- AUTO_INCREMENT for table `tb_usuaio`
 --
 ALTER TABLE `tb_usuaio`
-  MODIFY `idtb_usuaio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `idtb_usuaio` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `tp_usuario_tb`
+--
+ALTER TABLE `tp_usuario_tb`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- Constraints for dumped tables
 --
@@ -281,6 +383,7 @@ ALTER TABLE `tb_livro`
 ALTER TABLE `tb_livro_autor`
   ADD CONSTRAINT `fk_tb_livro_has_tb_autores_tb_autores1` FOREIGN KEY (`tb_autores_idtb_autores`) REFERENCES `tb_autores` (`idtb_autores`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   ADD CONSTRAINT `fk_tb_livro_has_tb_autores_tb_livro` FOREIGN KEY (`tb_livro_idtb_livro`) REFERENCES `tb_livro` (`idtb_livro`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
