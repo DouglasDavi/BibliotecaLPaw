@@ -1,3 +1,7 @@
+<style type="text/css">
+    .text-right{ text-align: right;}    
+</style>    
+
 <?php
 /**
  * Created by PhpStorm.
@@ -148,6 +152,14 @@ public static function sidebar()
             </ul>
             <ul class=\"nav\">
                 <li class=\"active\">
+                    <a href='exemplares.php'>
+                        <i class=\"ti-agenda\"></i>
+                        <p>Exemplar</p>
+                    </a>
+                </li>
+            </ul>
+            <ul class=\"nav\">
+                <li class=\"active\">
                     <a href='grafico.php'>
                         <i class=\"fa fa-pie-chart\" aria-hidden=\"true\"></i>
                         <p>Gráfico</p>
@@ -172,10 +184,17 @@ public static function mainpanel()
                         <span class=\"icon-bar bar2\"></span>
                         <span class=\"icon-bar bar3\"></span>
                     </button>
-                    <a class=\"navbar-brand\" href=\"#\">Boas vindas!</a>
+                    <a class=\"navbar-brand\" href=\"#\">Boas vindas!</a>                    
                 </div>
                 <div class=\"collapse navbar-collapse\">
                     <ul class=\"nav navbar-nav navbar-right\">
+                        <li>
+                            <a href='usuario.php'>
+                            <button type=\"button\" class=\"btn btn-default\">Criar Conta
+                                 <i class=\"ti-user\"></i>   
+                            </button>                                   
+                             </a>
+                        </li>
                         <!--li>
                             <a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\">
                                 <i class=\"ti-panel\"></i>

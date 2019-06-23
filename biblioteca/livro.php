@@ -13,26 +13,31 @@ $catg = new categoriaDao();
 $editora = new daoEditora(); 
 $buscaCategoria=$catg->buscaCategoria();
 $buscaEditora = $editora->buscaEditora();
+$daoAutor = new daoAutor();
 
-
+$autores = "";
 
 template::header();
 template::sidebar();
 template::mainpanel();
 
-print_r($daol->selectAutor());
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$id = $_REQUEST["id"];
-	$ano 	   = $_POST['ano'];
-	$titulo    = $_POST['titulo'];
-	$isbn 	   = $_POST['isbn'];
-	$edicao    = $_POST['edicao'];
-	$upload	   = $_POST['upload'];
-	$editora   = $_POST['editora'];
-	$categoria = $_POST['categoria'];
+ if(isset($_REQUEST["id"])){
+     $id = $_REQUEST["id"];
+  }else{
+    $id ="";
+  }   
+  $ano     = $_POST['ano'];
+  $titulo    = $_POST['titulo'];
+  $isbn      = $_POST['isbn'];
+  $edicao    = $_POST['edicao'];
+  $upload    = $_POST['upload'];
+  $editora   = $_POST['editora'];
+  $categoria = $_POST['categoria'];
+  $autores   = $_POST['autores'];
 
-	$daol->salvarLivro ($id, $ano, $isbn, $edicao,$editora, $categoria,$titulo, $upload);
-	
+  $daol->salvarLivro ($id, $ano, $isbn, $edicao,$editora, $categoria,$titulo, $upload, $autores);
+  
 }
 
 if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "upd" && $_REQUEST["id"]) {
@@ -47,6 +52,7 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "upd" && $_REQUEST["id"]) {
   $edicao = $livro->getEdicao();
   $isbn = $livro->getIsbn();
   $upload = $livro->getUpload();
+  $autores = $livro->getAutor();
 }
 
 if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
@@ -54,11 +60,12 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
     $daoLivro = new daoLivro();
     $daoLivro->remover($id);
 }
+$autoresCadastrados = $daoAutor->buscaAtt();
 
 ?>
 <div class="col-md-12">
 	<div class="col-md-1"></div>
-	<form class="form-horizontal col-md-11" action="" method="POST">
+	<form class="form-horizontal col-md-11" action="" method="POST" enctype="multipart/form-data">
 		<div class="form-group ">
   	    <label class="col-md-2 col-form-label">Título:</label>
   	    <div class="col-md-10">
@@ -66,7 +73,17 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
   	    </div>
   	</div>
 
-    <!-- autor aqui -->
+    <div class="form-group">
+        <Label class="col-md-2 col-form-label">Autores</Label>
+        <div class="col-md-10">
+            <select name="autores[]">
+                <option value="">--Selecione--</option>
+                <?php foreach ($autoresCadastrados as $key=>$value) { ?>
+                    <option value="<?=$value['idtb_autores']?>" <?=$value['idtb_autores'] == $autores ? "selected" : '' ?>><?=$value['nomeAutor']?></option>
+                <?php } ?>
+            </select>
+          </div>
+      </div>
   		<div class="form-group">
 		    <label class="col-md-2 col-form-label">Ano:</label>
 		    <div class="col-md-10">
@@ -89,10 +106,7 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
   		<div class="form-group">
 		    <label class="col-md-2 col-form-label">Categoria:</label>
 		    <div class="col-md-10">
-		      <select name="categoria">
-		    	<!-- 	<?php foreach ($buscaCategoria as $value) {?>
-		    			<option value="<?= $value->getIdCategoria()?>"><?= $value->getNomeCategoria()?></option>
-		    		<?php } ?> -->
+		      <select name="categoria">		    	
 		    		<?php
               $daoCategoria = new categoriaDao();
               $categorias = $daoCategoria->buscaCategoria();
@@ -130,7 +144,7 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
   		<div class="form-group">
 		    <label class="col-md-2 col-form-label">Upload:</label>
 		    <div class="col-md-10">
-		      <input type="file" name="upload" class="form-control-plaintext" id="upload" value="<?php if(!empty($upload)){echo $upload;}?>">
+		      <input type="text" name="upload" class="form-control-plaintext" id="upload" value="<?php if(!empty($upload)){echo $upload;}?>">
 		    </div>
   		</div>
   		
@@ -145,7 +159,10 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
   		</div>
 	</form>
 	    <?php
-                $daoLivro = new daoLivro();
-                $daoLivro->tabelapaginada();
-         ?>
+        $daoLivro = new daoLivro();
+        $daoLivro->tabelapaginada();
+      ?>
+<?php
+  template::footer();
+?>  
 </div>

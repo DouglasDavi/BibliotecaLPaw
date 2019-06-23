@@ -11,7 +11,11 @@ template::sidebar();
 template::mainpanel();
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$edicao = $_POST['edicao']; 
-  $id = $_REQUEST["id"];
+  if(isset($_REQUEST["id"])){
+     $id = $_REQUEST["id"];
+  }else{
+    $id ="";
+  }  
   
 	$edit->salvarEditora($id, $edicao);
 }
@@ -45,10 +49,13 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
  				<label class="control-label">Edição:</label>
  				<input class="form-control col-md-6" type="text" name="edicao" value="<?php if(!empty($nome)){echo $nome;}?>">
  			</div>
- 			<div class="form-group">
- 				<button type="submit" name="enviar" class="form-control">Enviar</button>
-        <button type="button" class="btn btn-primary" onclick="document.location.href='PDF/exportar.php?pagina=editora'">Relatório</button>
- 			</div>
+      <br>
+      <div class="col-md-12">
+        <div class="form-group col-md-6">
+   				<button type="submit" name="enviar" class="btn btn-primary">Enviar</button>
+          <button type="button" class="btn btn-primary" onclick="document.location.href='PDF/exportar.php?pagina=editora'">Relatório</button>
+   			</div>
+    </div>
  		</form>
  	</div>
  	
@@ -58,3 +65,6 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
  	$daoEditora = new daoEditora();
     $daoEditora->tabelapaginada();
   ?>	 
+<?php
+template::footer();
+?>  

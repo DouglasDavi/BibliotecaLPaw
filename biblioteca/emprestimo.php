@@ -1,55 +1,151 @@
-<?php 
+<?php
 require_once "view/template.php";
-require_once "db/Conexao.php";
+require_once "dao/daoExemplar.php";
 require_once "dao/daoEmprestimo.php";
-require_once "modelo/categoria.php";
-$cat = new daoEmprestimo();
-
-if($_SERVER['REQUEST_METHOD'] == 'POST') {
-	$emprestimo = $_POST['categoria'];
-	$id = $_REQUEST["id"];
-	$cat->salvarCategoria($id, $emprestimo);
-}
+require_once "dao/usuarioDAO.php";
+require_once "modelo/emprestimo.php";
 template::header();
 template::sidebar();
 template::mainpanel();
-
-if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "upd" && $_REQUEST["id"]) {
-    $id = $_REQUEST["id"];
-    $daoEmprestimo = new daoEmprestimo();
-    $emprestimo = new emprestimo();
-    $emprestimo = $daoEmprestimo->atulizarCategoria($id);
+$daoExemplar = new daoExemplar();
+$exemplares = $daoExemplar->selectAll();
+$daoUsuario = new usuarioDAO();
+$usuarios = $daoUsuario->selectAll();
+$daoEmprestimo = new daoEmprestimo();
+if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "save") {
+    $emprestimo = new Emprestimo();
+    $emprestimo->setUsuario($_POST["usuario"]);
+    $emprestimo->setExemplar($_POST["exemplar"]);
+    $emprestimo->setDataEmprestimo($_POST["dt-emprestimo"]);
+    $emprestimo->setObservacao($_POST["observacoes"]);
+    $emprestimo->setTipo($_POST["tipo"]);
+    $usuario = $daoUsuario->update($_POST['usuario']);
+    $date = new DateTime($_POST["dt-emprestimo"]);
+    $interval = new DateInterval('P10D');
+    if($usuario->getTipo() == 3){
+        $interval = new DateInterval('P15D');
+    }
+    $date->add($interval);
     
-  	$nome = $emprestimo->getNomeCategoria();
-  	$id = $emprestimo->getIdCategoria();
+    $emprestimo->setVencimento($date->format('Y-m-d'));
+    
+    $daoEmprestimo->salvar($emprestimo);
+    unset($categoria);
 }
-
-if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
-    $id = $_REQUEST["id"];
-    $daoEmprestimo = new daoEmprestimo();
-    $daoEmprestimo->remover($id);
+if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "upd" && $_REQUEST["usuario"] && $_REQUEST["titulo"]) {
+    $emprestimo = new Emprestimo();
+    $emprestimo->setUsuario($_GET['usuario']);
+    $emprestimo->setExemplar($_GET['titulo']);
+    $daoEmprestimo->devolverLivro($emprestimo);
 }
+if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "emp" && $_REQUEST["usuario"] && $_REQUEST["titulo"]) {
+    $emprestimo = new Emprestimo();
+    $emprestimo->setUsuario($_GET['usuario']);
+    $emprestimo->setExemplar($_GET['titulo']);
+    $usuario = $daoUsuario->selectByName($_GET['usuario']);
+    $date = new DateTime($_GET["dt-emprestimo"]);
+    $interval = new DateInterval('P10D');
+    
+    if($usuario->getTipo() == '3'){
+        $interval = new DateInterval('P15D');
+    }
+    $date->add($interval);
+    $emprestimo->setVencimento($date->format('Y-m-d'));
+    $emprestimo->setTipo(1);
+    print_r($emprestimo);
+    $daoEmprestimo->tornarEmprestimo($emprestimo);
+}
+?>
+
+    <div class='content' xmlns="http://www.w3.org/1999/html">
+        <div class='container-fluid'>
+            <div class='row'>
+                <div class='col-md-12'>
+                    <div class='card'>
+                        <div class='header'>
+                            <h4 class='title'>Empréstimos</h4>
+                            <p class='category'>Lista de Empréstimos do Sistema</p>
+                        </div>
+                        <div class='content table-responsive'>
+                            <form action="?act=save&id=" method="POST">
+                                <input type="hidden" name="id" value="<?php if(isset($categoria) && $categoria != null) {echo $categoria->getIdCategoria();}?>">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label for="">Livro</label>
+                                            <select name="exemplar" id="" class="form-control">
+                                                <?php                                                 
+                                                if(isset($exemplares))
+                                                {
+                                                    
+                                                    foreach($exemplares as $exemplar)
+                                                    {
+                                                ?>
+                                                    <option value="<?php echo $exemplar->getIdExemplar() ?>"><?php echo $exemplar->getLivro()->getTitulo() ?></option>
+                                                <?php
+                                                    }
+                                                }?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label for="">Usuário</label>
+                                            <select name="usuario" id="" class="form-control">
+                                                <?php                                                 
+                                                if(isset($usuarios))
+                                                {
+                                                    
+                                                    foreach($usuarios as $usuario)
+                                                    {
+                                                ?>
+                                                    <option value="<?php echo $usuario->getIdtbUsuario() ?>"><?php echo $usuario->getNomeUsuario() ?></option>
+                                                <?php
+                                                    }
+                                                }?>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="">Tipo</label>
+                                            <select name="tipo" id="" class="form-control">
+                                                <option value="0">Reserva</option>
+                                                <option value="1">Empréstimo</option>                                                
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                                <label for="">Data do empréstimo</label>
+                                                <input type="date" class="form-control" name="dt-emprestimo">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label for="">Observações</label>
+                                        <textarea name="observacoes" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 d-flex align-items-center">
+                                        <button class='btn btn-success' type="submit">Cadastrar</button>
+                                    </div>
+                                </div>                                
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php
+                $daoEmprestimo->tabelaPaginada();
+            ?>
+        </div>
+    </div>
 
 
- ?>
- <style type="text/css">
- 	.cab{text-align: center; font-size: 18px; background-color: #fd3142;}
- </style>
- <div class="panel panel-default col-md-offset-2 col-md-8">
- 	<div class="panel-heading cab"><strong>Adicione uma emprestimo</strong></div>
- 	<div class="panel-body">
- 		<form class="form-horizontal" method="POST">
- 			<div class="form-group col-md-6">
- 				<label class="control-label">Nome da emprestimo:</label>
- 				<input class="form-control col-md-6" type="text" name="categoria" value="<?php if(!empty($nome)){echo $nome;}?>">
- 			</div>
- 			<div class="form-group">
- 				<button type="submit" name="enviar" class="form-control">Enviar</button>
- 			</div>
- 		</form>
- 	</div>
- </div>
- <?php 
- 	$daoEmprestimo = new daoEmprestimo();
-    $daoEmprestimo->tabelapaginada();
-  ?>	 
+<?php
+    template::footer();
+?>

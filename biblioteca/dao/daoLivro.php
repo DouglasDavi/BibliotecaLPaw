@@ -54,12 +54,15 @@ class daoLivro
                     a.ano AS Ano,
                     a.upload AS Upload,
                     b.nomeEditora AS Editora, 
-                    c.nomeCategoria AS Categoria
+                    c.nomeCategoria AS Categoria,
+                    t.tb_autores_idtb_autores AS Autor
                 FROM tb_livro a 
                     INNER JOIN 
                 tb_editora b ON a.tb_editora_idtb_editora = b.idtb_editora
                     INNER JOIN 
-                tb_categoria c ON a.tb_categoria_idtb_categoria = C.idtb_categoria 
+                tb_categoria c ON a.tb_categoria_idtb_categoria = c.idtb_categoria 
+                    INNER JOIN
+                tb_livro_autor t ON t.tb_livro_idtb_livro = a.idtb_livro
                 WHERE a.idtb_livro = " . $id);
 
             if ($cmd->execute()) {
@@ -73,21 +76,16 @@ class daoLivro
                 $livro->setUpload($rs->Upload);
                 $livro->setEditora($rs->Editora);
                 $livro->setCategoria($rs->Categoria);
+                $livro->setAutor($rs->Autor);    
+
                 return $livro;
             } else {
                 throw new PDOException("<script> alert('Não foi possível carregar os dados!'); </script>");
             }
        
     }
-    public function selectAutor(){
-        $cmd = Conexao::getInstance()->prepare("SELECT * FROM tb_autor");
-        if ($cmd->execute()) {
-            $rs = $cmd->fetchAll(PDO::FETCH_OBJ);           
-        }    
-        return $rs
-    }
 
-    public function salvarLivro ($id, $ano, $isbn, $edicao,$editora, $categoria,$titulo, $upload){
+     public function salvarLivro ($id, $ano, $isbn, $edicao,$editora, $categoria,$titulo, $upload, $autores){
         if(!empty($id)){   
                 $cmd = Conexao::getInstance()->prepare(
                     " UPDATE tb_livro SET 
@@ -101,17 +99,31 @@ class daoLivro
               WHERE idtb_livro = $id");
             } else {      
                 $cmd = Conexao::getInstance()->prepare("INSERT INTO tb_livro (titulo, isbn, edicao, ano, upload, tb_editora_idtb_editora, tb_categoria_idtb_categoria) VALUES (:titulo, :isbn, :edicao, :ano, :upload, :editora, :categoria) ");
-	        }   
-	$cmd->bindValue(":ano", $ano);
-	$cmd->bindValue(":edicao", $edicao);
-	$cmd->bindValue(":editora", $editora);
-	$cmd->bindValue(":categoria", $categoria);
-	$cmd->bindValue(":titulo", $titulo);
-    $cmd->bindValue(":isbn", $isbn);
-	$cmd->bindValue(":upload", $upload);
+            }   
+        $cmd->bindValue(":ano", $ano);
+        $cmd->bindValue(":edicao", $edicao);
+        $cmd->bindValue(":editora", $editora);
+        $cmd->bindValue(":categoria", $categoria);
+        $cmd->bindValue(":titulo", $titulo);
+        $cmd->bindValue(":isbn", $isbn);
+        $cmd->bindValue(":upload", $upload);
 
-	$cmd->execute();
-	}
+        $cmd->execute(); 
+
+        $sql2 = "SELECT idtb_livro FROM tb_livro ORDER BY idtb_livro DESC limit 1";
+        $cmd2 = Conexao::getInstance()->prepare($sql2);
+        $cmd2->execute();
+        $id_livro = $cmd2->fetch(PDO::FETCH_ASSOC);
+         
+        foreach ($autores as $key => $value) {
+            $autoresID = implode(",", $autores);
+            $sql = "INSERT INTO tb_livro_autor (tb_livro_idtb_livro, tb_autores_idtb_autores) VALUE($id_livro[idtb_livro], $autoresID)";
+            $stm = Conexao::getInstance()->prepare($sql);
+            $stm->execute();
+            $result = $stm->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+    }
 
 
     public function remover($id)

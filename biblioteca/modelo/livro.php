@@ -17,6 +17,7 @@ class livro
     private $upload;
     private $editora;
     private $categoria;
+    private $autor;
 
    public function __construct(){
 
@@ -112,6 +113,16 @@ class livro
     public function setCategoria($categoria)
     {
         $this->categoria = $categoria;
+    }
+
+    public function getAutor()
+    {
+        return $this->autor;
+    }
+
+    public function setAutor($autor)
+    {
+        $this->autor = $autor;
     }
 
 }

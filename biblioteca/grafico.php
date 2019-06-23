@@ -1,64 +1,179 @@
-<?php 
-require_once "view/template.php";
-require_once "db/Conexao.php";
-require_once "modelo/livro.php";
+<?php require_once "dao/functionsCharts.php"; ?>
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
 
-template::header();
-template::sidebar();
-template::mainpanel();
+      function drawChart() {
 
-function dadosGrafico(){
+        var data = google.visualization.arrayToDataTable([
+        	['Task', 'Hours per Day'],
+        	<?php 
+        		$regra = "";
+        		
+        		foreach (EmprestimoNoMes() as $key => $value) {
+        			$regra.= "['".$mesesAno[$value[1]]."', ".$value[0]."],";
+        		}       			
+        	$regra = substr($regra, 0, -1);
+    		echo $regra;		
+        	?>         
+           
+        ]);
 
-	$cmd = Conexao::getInstance()->
-    prepare("SELECT a.titulo AS Titulo FROM tb_livro a");                                                        
-                                                                   
-        if ($cmd->execute()) {
-            $livros = [];
-            while($rs = $cmd->fetch(PDO::FETCH_OBJ)) {
-                $livro = new livro;
-                $livro->setIdLivro($rs->IdLivro);
-                $livro->setTitulo($rs->Titulo);                    
-                array_push($livros, $livro);
-            }
-            return $livros;
-        }
-}
-$dadosGrafico = dadosGrafico();
-?>
-<div class="container">
-	<div class="row">
-    	<div class="col-sm-4">    
-			<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-			    <script type="text/javascript">
-			      google.charts.load("current", {packages:["corechart"]});
-			      google.charts.setOnLoadCallback(drawChart);
-			      function drawChart() {
-			      	
-			        var data = google.visualization.arrayToDataTable([
-			               	
-			       
-			          ['Task', 'Hours per Day'],
-			         <?php foreach ($dadosGrafico as $key => $value) {
-			          echo "['".$value[1]."',  '".$value[0]."'],";
-			         }?>
-			          ['Eat',      2],
-			          ['Commute',  2],
-			          ['Watch TV', 2],
-			          ['Sleep',    7]
-			        	  
-			        ]);
-					
-			        var options = {
-			          title: 'Meu titulo',
-			          is3D: true,
-			        };
+        var options = {
+          title: 'Emprestimos No Mês'
+        };
 
-			        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-			        chart.draw(data, options);
-			      }
-			    </script>
+        var chart = new google.visualization.PieChart(document.getElementById('EmprestimosNoMes'));
 
-		    <div id="piechart_3d" style="width: 900px; height: 500px;"></div> 
-		</div>    
-    </div>
-</div>
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+        	['Task', 'Hours per Day'],
+        	<?php 
+        		$regra = "";
+        		
+        		foreach (ReservasNoMes() as $key => $value) {
+        			$regra.= "['".$mesesAno[$value[1]]."', ".$value[0]."],";
+        		}       			
+        	$regra = substr($regra, 0, -1);
+    		echo $regra;		
+        	?>         
+           
+        ]);
+
+        var options = {
+          title: 'Reservas No Mês'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('ReservasNoMes'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+        	['Task', 'Hours per Day'],
+        	<?php 
+        		$regra = "";
+        		foreach (LivroReservadosEmprestados() as $key => $value) {
+        			$regra.= "['".$value[1]."', ".$value[0]."],";
+        		}       			
+        	$regra = substr($regra, 0, -1);
+    		echo $regra;		
+        	?>         
+           
+        ]);
+
+        var options = {
+          title: 'Livros do Reservados/Emprestados do mês'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('emprestado_reservado'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+        	['Task', 'Hours per Day'],
+        	<?php 
+        		$regra = "";
+        		foreach (EmprestimoCategoria() as $key => $value) {
+        			$regra.= "['".$value[0]."', ".$value[1]."],";
+        		}       			
+        	$regra = substr($regra, 0, -1);
+    		echo $regra;		
+        	?>         
+           
+        ]);
+
+        var options = {
+          title: 'Livros Emprestado Por Categoria'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('emprestimoCategoria'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+
+        var data = google.visualization.arrayToDataTable([
+        	['Task', 'Hours per Day'],
+        	<?php 
+        		$regra = "";
+        		foreach (ReservasCategoria() as $key => $value) {
+        			$regra.= "['".$value[0]."', ".$value[1]."],";
+        		}       			
+        	$regra = substr($regra, 0, -1);
+    		echo $regra;		
+        	?>         
+           
+        ]);
+
+        var options = {
+          title: 'Livros Reservados Por Categoria'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('reservaCategoria'));
+
+        chart.draw(data, options);
+      }
+    </script>
+
+
+
+  </head>
+  <body>
+  	
+  	<div class="col-md-12">
+  		<div class="col-md-3"></div>
+  		<div class="col-md-6">	
+	   		<div id="EmprestimosNoMes" style="width: 800px; height: 400px; margin-bottom: 10px;"></div>
+	   </div>
+	</div>
+  	<div class="col-md-12">
+	  	<div class="col-md-6">
+	    	<div id="ReservasNoMes" style="width: 800px; height: 400px;"></div>
+	    </div>
+	    <div class="col-md-6">
+	    	<div id="emprestado_reservado" style="width: 800px; height: 400px;"></div>
+	    </div>
+	</div>
+	<div class="col-md-12">		    
+	    <div class="col-md-6">
+	    	<div id="emprestimoCategoria" style="width: 800px; height: 400px;"></div>
+	    </div>
+	    <div class="col-md-6">
+	    	<div id="reservaCategoria" style="width: 800px; height: 400px;"></div>
+	    </div>
+	</div>    
+  </body>
+</html>

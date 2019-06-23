@@ -17,27 +17,7 @@ template::mainpanel();
                         <p class='category'></p>
                     </div>
                     <div class='content table-responsive'>
-                          <h4 class="title">Seja bem-vindo </h4>
-                        <!--  <?php 
-                         $dados = $p->BuscaAutor();
-                         echo "<pre>";
-                         print_r($dados);
-                         echo "</pre>";
-                            // $p->query("INSERT INTO exemplo(nome, telefone, email) VALUES('TTTTTTTTTTT', '88888888', 'teste@gmail.com')");
-                            // $cmd = $pdo->query("SELECT * from exemplo");
-                            // $res = $cmd->fetchAll(PDO::FETCH_ASSOC);
-                         if(count($dados)){                              
-                            for ($i=0; $i < count($dados); $i++) {
-                                foreach ($dados[$i] as $key => $value) {
-                                   if($key != 'id'){
-                                       echo $value."<br>";
-                                    }
-                                }
-                            }
-                         }        
-                             
-                            
-                         ?>    -->
+                          <h4 class="title">Seja bem-vindo </h4>                        
                     </div>
                 </div>
             </div>

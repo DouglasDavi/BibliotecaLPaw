@@ -7,7 +7,11 @@ $cat = new categoriaDao();
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
 	$categoria = $_POST['categoria'];
-	$id = $_REQUEST["id"];
+  if(isset($_REQUEST["id"])){
+	   $id = $_REQUEST["id"];
+  }else{
+    $id ="";
+  }   
 	$cat->salvarCategoria($id, $categoria);
 }
 template::header();
@@ -43,10 +47,13 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
  				<label class="control-label">Nome da Categoria:</label>
  				<input class="form-control col-md-6" type="text" name="categoria" value="<?php if(!empty($nome)){echo $nome;}?>">
  			</div>
- 			<div class="form-group">
- 				<button type="submit" name="enviar" class="form-control">Enviar</button>
+      <br>
+      <div class="col-md-12">
+ 			<div class="form-group col-md-6">
+ 				<button type="submit" name="enviar" class="btn btn-primary">Enviar</button>
         <button type="button" class="btn btn-primary" onclick="document.location.href='PDF/exportar.php?pagina=categoria'">Relatório</button>
  			</div>
+    </div>
  		</form>
  	</div>
  </div>
@@ -54,3 +61,6 @@ if (isset($_REQUEST["act"]) && $_REQUEST["act"] == "del" && $_REQUEST["id"]) {
  	$daoCategoria = new categoriaDao();
     $daoCategoria->tabelapaginada();
   ?>	 
+  <?php
+template::footer();
+?>

@@ -21,17 +21,10 @@ class daoAutor implements iPage
             return "Erro: " . $erro->getMessage();
         }
     }  
-   public function buscaAtt(){
-            
-            $cmd = Conexao::getInstance()->prepare("SELECT idtb_autores, nomeAutor FROM tb_autores ");
+    public function buscaAtt(){            
+            $cmd = Conexao::getInstance()->prepare("SELECT * FROM tb_autores ");
             $cmd->execute();
-            $autores=[];
-            while($rs = $cmd->fetch(PDO::FETCH_OBJ)){
-                $autor = new autor();
-                $autor->setIdtbAutores($rs->idtb_autores);
-                $autor->setNomeAutor($rs->nomeAutor);
-                array_push($autores, $autor);
-            }
+            $autores = $cmd->fetchAll(PDO::FETCH_ASSOC);
             return $autores;
         }  
 
