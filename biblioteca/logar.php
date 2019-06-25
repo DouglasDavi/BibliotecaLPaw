@@ -22,6 +22,7 @@ if( $valido == true)
 {
     $_SESSION['login'] = $login;
     $_SESSION['senha'] = $senha;
+    $_SESSION['tipo'] = $valido->getTipo();    
     header('location:index.php');
 }
 else{

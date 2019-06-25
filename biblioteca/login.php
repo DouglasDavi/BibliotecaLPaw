@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<style type="text/css">
+	.text-center{text-align: center;}
+</style>
 <head>
     <meta charset="UTF-8">
     <title>Logar no Sistema</title>
@@ -16,7 +19,10 @@
         <div class="card">
             <div class="card-header bg-success text-white">
                 <h6>Login</h6>
-            </div>    
+            </div>
+            <div class="text-center">    
+            <img src="assets/img/logo.jpg" alt="logo bliblioteca" height="100" width="150">
+            </div>
             <div class="card-body">
                 <form method="post" action="logar.php" id="formlogin" name="formlogin" >
                     <div class="form-group">                    
