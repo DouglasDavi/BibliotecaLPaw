@@ -21,7 +21,7 @@ class emprestimo
     {
         return $this->tipo;
     }
-    public function setTipo($tipo): void
+    public function setTipo($tipo)
     {
         $this->tipo = $tipo;
     }
@@ -29,7 +29,7 @@ class emprestimo
     {
         return $this->usuario;
     }
-    public function setVencimento($vencimento): void
+    public function setVencimento($vencimento)
     {
         $this->vencimento = $vencimento;
     }
@@ -37,7 +37,7 @@ class emprestimo
     {
         return $this->vencimento;
     }
-    public function setUsuario($usuario): void
+    public function setUsuario($usuario)
     {
         $this->usuario = $usuario;
     }
@@ -45,7 +45,7 @@ class emprestimo
     {
         return $this->exemplar;
     }
-    public function setExemplar($exemplar): void
+    public function setExemplar($exemplar)
     {
         $this->exemplar = $exemplar;
     }
@@ -53,7 +53,7 @@ class emprestimo
     {
         return $this->dataEmprestimo;
     }
-    public function setDataEmprestimo($dataEmprestimo): void
+    public function setDataEmprestimo($dataEmprestimo)
     {
         $this->dataEmprestimo = $dataEmprestimo;
     }
@@ -61,7 +61,7 @@ class emprestimo
     {
         return $this->dataDevolucao;
     }
-    public function setDataDevolucao($dataDevolucao): void
+    public function setDataDevolucao($dataDevolucao)
     {
         $this->dataDevolucao = $dataDevolucao;
     }
@@ -69,8 +69,9 @@ class emprestimo
     {
         return $this->observacao;
     }
-    public function setObservacao($observacao): void
+    public function setObservacao($observacao)
     {
         $this->observacao = $observacao;
     }
+        
 }
